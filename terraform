@@ -1,0 +1,29 @@
+#!/bin/sh
+
+set -eu
+
+ENV=chaws
+export TF_DATA_DIR=.terraform_${ENV}
+
+# export these beforehand
+#export AWS_ACCESS_KEY_ID="abc"
+#export AWS_SECRET_ACCESS_KEY="abc"
+#export AWS_DEFAULT_REGION="us-east-1"
+#export TF_VAR_account_number="123"
+
+# init if needed
+if [ ! -d "${TF_DATA_DIR}" ]; then
+    terraform init
+fi
+
+if [ $# -eq 0 ]; then
+    set -- plan .
+fi
+
+
+#export TF_CLI_ARGS="-var-file=shared.tfvars"
+
+terraform "$@"
+
+# set the stage for ansible
+#terraform state pull | ./scripts/state_to_ansible_inventory.py > "../ansible/hosts.${ENV}"

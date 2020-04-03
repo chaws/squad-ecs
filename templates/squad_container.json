@@ -1,0 +1,34 @@
+[
+  {
+    "name": "squad-chaws-container",
+    "essential": true,
+    "image": "${container_image}",
+    "cpu": ${fargate_cpu},
+    "memory": ${fargate_memory},
+    "networkMode": "awsvpc",
+    "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/squad-chaws-container",
+          "awslogs-region": "${aws_region}",
+          "awslogs-stream-prefix": "ecs"
+        }
+    },
+    "portMappings": [
+      {
+        "containerPort": ${container_port},
+        "hostPort": ${container_port}
+      },
+      {
+        "containerPort": 80,
+        "hostPort": 80
+      }
+    ],
+    "entryPoint": ["/app/start-squad", "frontend"],
+    "ulimits": [{
+          "name": "nofile",
+          "softLimit": 8192,
+          "hardLimit": 8192
+    }]
+  }
+]
